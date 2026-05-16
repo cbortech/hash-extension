@@ -116,9 +116,33 @@ describe('hash — COSE algorithms', () => {
 
     expect(value.toEDN()).toBe("hash'foo'");
   });
+
+  test('explicit default algorithm ID is omitted for text input', () => {
+    const value = cbor.fromEDN('hash<<"foo", -16>>');
+
+    expect(value.toEDN()).toBe("hash'foo'");
+  });
 });
 
 describe('hash — serialization options', () => {
+  test('explicit default algorithm ID is omitted for byte-string input', () => {
+    const value = cbor.fromEDN("hash<<'foo', -16>>");
+
+    expect(value.toEDN()).toBe("hash<<'foo'>>");
+  });
+
+  test('printable byte-string input stays in sqstr notation by default', () => {
+    const value = cbor.fromEDN("hash<<'foo', -44>>");
+
+    expect(value.toEDN()).toBe('hash<<\'foo\', "SHA-512">>');
+  });
+
+  test('binary byte-string input stays in hex notation by default', () => {
+    const value = cbor.fromEDN("hash<<h'0102', -44>>");
+
+    expect(value.toEDN()).toBe('hash<<h\'0102\', "SHA-512">>');
+  });
+
   test("sqstr:none serializes byte-string input as h'...'", () => {
     const value = cbor.fromEDN("hash<<'foo'>>");
 

@@ -18,13 +18,22 @@ import { hash } from '@cbortech/hash-extension';
 
 const cbor = new CBOR({ extensions: [hash] });
 
-const value = cbor.fromEDN("hash'foo'");
-console.log(value.toEDN({ appStrings: false }));
-// h'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
+// Parse CBOR-EDN containing hash values.
+const document = cbor.parse(`{
+  "hash": hash'foo'
+}`);
+// document.hash is a bare Uint8Array.
 
-const sha512 = cbor.fromEDN('hash<<"foo", "SHA-512">>');
-console.log(sha512.toEDN());
-// hash<<'foo', "SHA-512">>
+// Convert CBOR-EDN containing a hash value into CBOR.
+const encoded = cbor.fromEDN("hash'foo'").toCBOR();
+// encoded is CBOR binary data stored as a Uint8Array.
+// Inspect the encoded CBOR value with toHexDump():
+console.log(CBOR.fromCBOR(encoded).toHexDump());
+// 58 20 2C 26 B4 6B 68 FF C6 8F F9 9B 45 3C 1D 30 41 34 13 42 2D 70 64 83 BF A0 F9 8A 5E 88 62 66 E7 AE  -- h'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
+
+// Format CBOR-EDN with hash values as h'...'.
+console.log(cbor.format(`{ "hash" : hash'foo' }`, { appStrings: false }));
+// {"hash":h'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'}
 ```
 
 ## EDN Forms

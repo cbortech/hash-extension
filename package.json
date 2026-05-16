@@ -1,13 +1,13 @@
 {
   "name": "@cbortech/hash-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cryptographic hash application-string extension for @cbortech/cbor",
   "keywords": [
     "cbor",
     "cbor-edn",
     "hash"
   ],
-  "homepage": "https://cbor.tech/",
+  "homepage": "https://github.com/cbortech/hash-extension",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cbortech/hash-extension.git"
@@ -64,24 +64,24 @@
     "format:check": "prettier --check ."
   },
   "peerDependencies": {
-    "@cbortech/cbor": "^0.23.1"
+    "@cbortech/cbor": "^0.24.0"
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0"
   },
   "devDependencies": {
-    "@cbortech/cbor": "^0.23.1",
-    "@types/node": "^24.12.3",
-    "@vitest/browser": "^4.1.5",
-    "@vitest/browser-playwright": "^4.1.5",
-    "@vitest/coverage-v8": "^4.1.5",
-    "@vitest/ui": "^4.1.5",
+    "@cbortech/cbor": "^0.24.0",
+    "@types/node": "^24.12.4",
+    "@vitest/browser": "^4.1.6",
+    "@vitest/browser-playwright": "^4.1.6",
+    "@vitest/coverage-v8": "^4.1.6",
+    "@vitest/ui": "^4.1.6",
     "cross-env": "^10.1.0",
-    "playwright": "^1.59.1",
+    "playwright": "^1.60.0",
     "prettier": "^3.8.3",
     "typescript": "^5.9.3",
-    "vite": "^8.0.11",
+    "vite": "^8.0.12",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   }
 }
