@@ -1,4 +1,4 @@
-import { type CborExtension, type ToEDNOptions } from '@cbortech/cbor';
+import { type CborExtension, type ToCDNOptions } from '@cbortech/cbor';
 import {
   CborByteString,
   CborNint,
@@ -55,8 +55,8 @@ export class CborHashExt extends CborByteString {
     this.algorithmId = algorithmId;
   }
 
-  override _toEDN(options: ToEDNOptions | undefined, depth: number): string {
-    if (options?.appStrings === false) return super._toEDN(options, depth);
+  override _toCDN(options: ToCDNOptions | undefined, depth: number): string {
+    if (options?.appStrings === false) return super._toCDN(options, depth);
 
     const isDefault = this.algorithmId === DEFAULT_ALGORITHM_ID;
 
