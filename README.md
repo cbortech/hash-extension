@@ -2,7 +2,9 @@
 
 Cryptographic hash application-string extension for [`@cbortech/cbor`](https://www.npmjs.com/package/@cbortech/cbor).
 
-This extension implements the `hash` application-extension identifier from CBOR Extended Diagnostic Notation (EDN). It computes a cryptographic hash and returns the output as a CBOR byte string.
+[`@cbortech/cbor`](https://www.npmjs.com/package/@cbortech/cbor) is a TypeScript library for converting between [CBOR](https://www.rfc-editor.org/rfc/rfc8949.html), [CDN](https://datatracker.ietf.org/doc/draft-ietf-cbor-edn-literals/), and JavaScript values.
+
+This extension implements the `hash` application-extension identifier from [CDN](https://datatracker.ietf.org/doc/draft-ietf-cbor-edn-literals/). It computes a cryptographic hash and returns the output as a CBOR byte string.
 
 ## Installation
 
@@ -18,25 +20,25 @@ import { hash } from '@cbortech/hash-extension';
 
 const cbor = new CBOR({ extensions: [hash] });
 
-// Parse CBOR-EDN containing hash values.
+// Parse CDN containing hash values.
 const document = cbor.parse(`{
   "hash": hash'foo'
 }`);
 // document.hash is a bare Uint8Array.
 
-// Convert CBOR-EDN containing a hash value into CBOR.
-const encoded = cbor.fromEDN("hash'foo'").toCBOR();
+// Convert CDN containing a hash value into CBOR.
+const encoded = cbor.fromCDN("hash'foo'").toCBOR();
 // encoded is CBOR binary data stored as a Uint8Array.
 // Inspect the encoded CBOR value with toHexDump():
 console.log(CBOR.fromCBOR(encoded).toHexDump());
 // 58 20 2C 26 B4 6B 68 FF C6 8F F9 9B 45 3C 1D 30 41 34 13 42 2D 70 64 83 BF A0 F9 8A 5E 88 62 66 E7 AE  -- h'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
 
-// Format CBOR-EDN with hash values as h'...'.
+// Format CDN with hash values as h'...'.
 console.log(cbor.format(`{ "hash" : hash'foo' }`, { appStrings: false }));
 // {"hash":h'2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'}
 ```
 
-## EDN Forms
+## CDN Forms
 
 - `hash'foo'` computes SHA-256 over the UTF-8 text `foo`.
 - `hash<<'foo'>>` computes SHA-256 over the byte string `foo`.

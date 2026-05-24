@@ -4,6 +4,7 @@
   "description": "Cryptographic hash application-string extension for @cbortech/cbor",
   "keywords": [
     "cbor",
+    "cdn",
     "cbor-edn",
     "hash"
   ],
