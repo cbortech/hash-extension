@@ -30,30 +30,30 @@ function fromHex(hex: string): Uint8Array {
 
 describe("hash — hash'...'", () => {
   test("hash'foo' produces a SHA-256 byte string", () => {
-    const value = cbor.fromEDN("hash'foo'");
+    const value = cbor.fromCDN("hash'foo'");
 
     expect(value).toBeInstanceOf(CborHashExt);
     expect(value).toBeInstanceOf(CborByteString);
     expect((value as CborByteString).value).toEqual(fromHex(SHA256_FOO));
-    expect(value.toEDN()).toBe("hash'foo'");
+    expect(value.toCDN()).toBe("hash'foo'");
   });
 
   test('raw app-string form is accepted', () => {
-    const value = cbor.fromEDN('hash`foo`');
+    const value = cbor.fromCDN('hash`foo`');
 
     expect(value).toBeInstanceOf(CborHashExt);
     expect((value as CborByteString).value).toEqual(fromHex(SHA256_FOO));
-    expect(value.toEDN()).toBe("hash'foo'");
+    expect(value.toCDN()).toBe("hash'foo'");
   });
 
   test('appStrings:false falls back to plain byte-string notation', () => {
-    const value = cbor.fromEDN("hash'foo'");
+    const value = cbor.fromCDN("hash'foo'");
 
-    expect(value.toEDN({ appStrings: false })).toBe(`h'${SHA256_FOO}'`);
+    expect(value.toCDN({ appStrings: false })).toBe(`h'${SHA256_FOO}'`);
   });
 
   test("hash'' hashes empty input", () => {
-    const value = cbor.fromEDN("hash''");
+    const value = cbor.fromCDN("hash''");
     const expected =
       'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
 
@@ -63,26 +63,26 @@ describe("hash — hash'...'", () => {
 
 describe('hash — app-sequence form', () => {
   test("hash<<'foo'>> uses default SHA-256 over byte-string input", () => {
-    const value = cbor.fromEDN("hash<<'foo'>>");
+    const value = cbor.fromCDN("hash<<'foo'>>");
 
     expect((value as CborByteString).value).toEqual(fromHex(SHA256_FOO));
-    expect(value.toEDN()).toBe("hash<<'foo'>>");
+    expect(value.toCDN()).toBe("hash<<'foo'>>");
   });
 
   test('hash<<"foo">> normalizes text input to hash string form', () => {
-    const value = cbor.fromEDN('hash<<"foo">>');
+    const value = cbor.fromCDN('hash<<"foo">>');
 
     expect((value as CborByteString).value).toEqual(fromHex(SHA256_FOO));
-    expect(value.toEDN()).toBe("hash'foo'");
+    expect(value.toCDN()).toBe("hash'foo'");
   });
 
   test("hash<<h'0102', -16>> hashes raw bytes", () => {
-    const value = cbor.fromEDN("hash<<h'0102', -16>>");
+    const value = cbor.fromCDN("hash<<h'0102', -16>>");
     const expected =
       'a12871fee210fb8619291eaea194581cbd2531e4b23759d225f6806923f63222';
 
     expect((value as CborByteString).value).toEqual(fromHex(expected));
-    expect(value.toEDN()).toBe("hash<<h'0102'>>");
+    expect(value.toCDN()).toBe("hash<<h'0102'>>");
   });
 });
 
@@ -97,8 +97,8 @@ describe('hash — COSE algorithms', () => {
     [-44, 'SHA-512', SHA512_FOO, 64],
     [-45, 'SHAKE256', SHAKE256_64_FOO, 64],
   ])('supports %s / %s', (id, name, expected, length) => {
-    const byId = cbor.fromEDN(`hash<<'foo', ${id}>>`);
-    const byName = cbor.fromEDN(`hash<<'foo', "${name}">>`);
+    const byId = cbor.fromCDN(`hash<<'foo', ${id}>>`);
+    const byName = cbor.fromCDN(`hash<<'foo', "${name}">>`);
 
     expect((byId as CborByteString).value).toEqual(fromHex(expected));
     expect((byName as CborByteString).value).toEqual(fromHex(expected));
@@ -106,53 +106,53 @@ describe('hash — COSE algorithms', () => {
   });
 
   test('non-default algorithms serialize with the registered COSE name', () => {
-    const value = cbor.fromEDN('hash<<"foo", -44>>');
+    const value = cbor.fromCDN('hash<<"foo", -44>>');
 
-    expect(value.toEDN()).toBe('hash<<\'foo\', "SHA-512">>');
+    expect(value.toCDN()).toBe('hash<<\'foo\', "SHA-512">>');
   });
 
   test('explicit default algorithm is omitted for text input', () => {
-    const value = cbor.fromEDN('hash<<"foo", "SHA-256">>');
+    const value = cbor.fromCDN('hash<<"foo", "SHA-256">>');
 
-    expect(value.toEDN()).toBe("hash'foo'");
+    expect(value.toCDN()).toBe("hash'foo'");
   });
 
   test('explicit default algorithm ID is omitted for text input', () => {
-    const value = cbor.fromEDN('hash<<"foo", -16>>');
+    const value = cbor.fromCDN('hash<<"foo", -16>>');
 
-    expect(value.toEDN()).toBe("hash'foo'");
+    expect(value.toCDN()).toBe("hash'foo'");
   });
 });
 
 describe('hash — serialization options', () => {
   test('explicit default algorithm ID is omitted for byte-string input', () => {
-    const value = cbor.fromEDN("hash<<'foo', -16>>");
+    const value = cbor.fromCDN("hash<<'foo', -16>>");
 
-    expect(value.toEDN()).toBe("hash<<'foo'>>");
+    expect(value.toCDN()).toBe("hash<<'foo'>>");
   });
 
   test('printable byte-string input stays in sqstr notation by default', () => {
-    const value = cbor.fromEDN("hash<<'foo', -44>>");
+    const value = cbor.fromCDN("hash<<'foo', -44>>");
 
-    expect(value.toEDN()).toBe('hash<<\'foo\', "SHA-512">>');
+    expect(value.toCDN()).toBe('hash<<\'foo\', "SHA-512">>');
   });
 
   test('binary byte-string input stays in hex notation by default', () => {
-    const value = cbor.fromEDN("hash<<h'0102', -44>>");
+    const value = cbor.fromCDN("hash<<h'0102', -44>>");
 
-    expect(value.toEDN()).toBe('hash<<h\'0102\', "SHA-512">>');
+    expect(value.toCDN()).toBe('hash<<h\'0102\', "SHA-512">>');
   });
 
   test("sqstr:none serializes byte-string input as h'...'", () => {
-    const value = cbor.fromEDN("hash<<'foo'>>");
+    const value = cbor.fromCDN("hash<<'foo'>>");
 
-    expect(value.toEDN({ sqstr: 'none' })).toBe("hash<<h'666f6f'>>");
+    expect(value.toCDN({ sqstr: 'none' })).toBe("hash<<h'666f6f'>>");
   });
 
   test('bstrEncoding controls byte-string input notation', () => {
-    const value = cbor.fromEDN("hash<<h'0102', -44>>");
+    const value = cbor.fromCDN("hash<<h'0102', -44>>");
 
-    expect(value.toEDN({ bstrEncoding: 'base64' })).toBe(
+    expect(value.toCDN({ bstrEncoding: 'base64' })).toBe(
       'hash<<b64\'AQI\', "SHA-512">>'
     );
   });
@@ -160,7 +160,7 @@ describe('hash — serialization options', () => {
 
 describe('hash — CBOR round-trip', () => {
   test('encoded hash output decodes as the same byte string', () => {
-    const encoded = cbor.fromEDN("hash'foo'").toCBOR();
+    const encoded = cbor.fromCDN("hash'foo'").toCBOR();
     const decoded = cbor.fromCBOR(encoded);
 
     expect(decoded).toBeInstanceOf(CborByteString);
@@ -170,10 +170,10 @@ describe('hash — CBOR round-trip', () => {
 
 describe('hash — invalid input', () => {
   test('uppercase HASH prefix is not claimed by this extension', () => {
-    const value = cbor.fromEDN("HASH'foo'");
+    const value = cbor.fromCDN("HASH'foo'");
 
     expect(value).not.toBeInstanceOf(CborHashExt);
-    expect(value.toEDN()).toBe("HASH'foo'");
+    expect(value.toCDN()).toBe("HASH'foo'");
   });
 
   test.each([
@@ -183,6 +183,6 @@ describe('hash — invalid input', () => {
     "hash<<'foo', 999>>",
     'hash<<\'foo\', "MD5">>',
   ])('%s throws SyntaxError', (source) => {
-    expect(() => cbor.fromEDN(source)).toThrow(SyntaxError);
+    expect(() => cbor.fromCDN(source)).toThrow(SyntaxError);
   });
 });

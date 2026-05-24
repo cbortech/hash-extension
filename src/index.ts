@@ -1,4 +1,4 @@
-import { type CborExtension, type ToEDNOptions } from '@cbortech/cbor';
+import { type CborExtension, type ToCDNOptions } from '@cbortech/cbor';
 import {
   CborByteString,
   CborNint,
@@ -55,8 +55,8 @@ export class CborHashExt extends CborByteString {
     this.algorithmId = algorithmId;
   }
 
-  override _toEDN(options: ToEDNOptions | undefined, depth: number): string {
-    if (options?.appStrings === false) return super._toEDN(options, depth);
+  override _toCDN(options: ToCDNOptions | undefined, depth: number): string {
+    if (options?.appStrings === false) return super._toCDN(options, depth);
 
     const isDefault = this.algorithmId === DEFAULT_ALGORITHM_ID;
 
@@ -64,7 +64,7 @@ export class CborHashExt extends CborByteString {
       return `${PREFIX_HASH}${escapeAppString(this.input.value)}`;
     }
 
-    const dataEdn =
+    const dataCdn =
       this.input instanceof CborTextString
         ? escapeAppString(this.input.value)
         : serializeBytes(
@@ -73,14 +73,14 @@ export class CborHashExt extends CborByteString {
             options?.sqstr
           );
 
-    if (isDefault) return `${PREFIX_HASH}<<${dataEdn}>>`;
+    if (isDefault) return `${PREFIX_HASH}<<${dataCdn}>>`;
 
     const algorithmName = COSE_ID_TO_NAME.get(this.algorithmId);
-    const algorithmEdn =
+    const algorithmCdn =
       algorithmName === undefined
         ? String(this.algorithmId)
         : `"${algorithmName}"`;
-    return `${PREFIX_HASH}<<${dataEdn}, ${algorithmEdn}>>`;
+    return `${PREFIX_HASH}<<${dataCdn}, ${algorithmCdn}>>`;
   }
 }
 
