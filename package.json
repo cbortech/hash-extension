@@ -1,6 +1,6 @@
 {
   "name": "@cbortech/hash-extension",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Cryptographic hash application-string extension for @cbortech/cbor",
   "keywords": [
     "cbor",
